@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ "Update" if employee else "Tambah" }} Employee</title>
+</head>
+<body>
+    <h2>{{ "Update" if employee else "Tambah" }} Employee</h2>
+    {% if error %}
+        <p role="alert">{{ error }}</p>
+    {% endif %}
+    <form action="{{ url_for('employee_bp.update_employee', employee_id=employee.id) if employee else url_for('employee_bp.create_employee') }}" method="POST">
+        <label for="name">Nama:</label><br>
+        <input
+            id="name"
+            type="text"
+            name="name"
+            value="{{ form_values.get('name', employee.name if employee else '') }}"
+            required
+        ><br><br>
+
+        <label for="position">Posisi:</label><br>
+        <input
+            id="position"
+            type="text"
+            name="position"
+            value="{{ form_values.get('position', employee.position if employee else 'Staff') }}"
+        ><br><br>
+
+        <label for="salary">Gaji:</label><br>
+        <input
+            id="salary"
+            type="number"
+            name="salary"
+            min="0"
+            value="{{ form_values.get('salary', employee.salary if employee else 0) }}"
+            required
+        ><br><br>
+
+        <button type="submit">{{ "Update" if employee else "Simpan" }}</button>
+        {% if employee %}
+            <a href="{{ url_for('employee_bp.list_employees_page') }}">Batal</a>
+        {% endif %}
+    </form>
+
+    <h3>Daftar Employee:</h3>
+    {% if employees %}
+        <ul>
+        {% for item in employees %}
+            <li>
+                {{ item.name }} - {{ item.position }} - Rp{{ item.salary }}
+                <a href="{{ url_for('employee_bp.edit_employee', employee_id=item.id) }}">Edit</a>
+                <form action="{{ url_for('employee_bp.delete_employee', employee_id=item.id) }}" method="POST" style="display: inline;">
+                    <button type="submit">Hapus</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Belum ada employee.</p>
+    {% endif %}
+</body>
+</html>
